@@ -11,30 +11,32 @@
 
   <script>
     function shareLocation() {
-      if ('geolocation' in navigator) {
-        const options = {
-          enableHighAccuracy: true,
-          timeout: 5000, // 5 seconds
-          maximumAge: 0
-        };
+  if ('geolocation' in navigator) {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000, // 5 seconds
+      maximumAge: 0
+    };
 
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            const whatsappLink = `whatsapp://send?text=Check my location: https://www.google.com/maps?q=${latitude},${longitude}`;
-            window.location.href = whatsappLink;
-          },
-          error => {
-            handleLocationError(error);
-          },
-          options
-        );
-      } else {
-        alert("Geolocation is not supported by your browser");
-      }
-    }
+    const watchId = navigator.geolocation.watchPosition(
+      position => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const whatsappLink = `whatsapp://send?text=Check my location: https://www.google.com/maps?q=${latitude},${longitude}`;
+        window.location.href = whatsappLink;
 
+        // If you only need a single location update, you can uncomment the following line
+        // navigator.geolocation.clearWatch(watchId);
+      },
+      error => {
+        handleLocationError(error);
+      },
+      options
+    );
+  } else {
+    alert("Geolocation is not supported by your browser");
+  }
+}
     function handleLocationError(error) {
       switch (error.code) {
         case error.PERMISSION_DENIED:
