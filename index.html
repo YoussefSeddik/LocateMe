@@ -6,8 +6,8 @@
   <title>Share My Location</title>
 </head>
 <body>
-  <h1>Share My Location</h1>
-  <button onclick="shareLocation()">Share My Location</button>
+  <h1>مشاركة اللوكيشن الحالي</h1>
+  <button onclick="shareLocation()" style="font-size: larger;">مشاركة اللوكيشن الحالي</button>
 
   <script>
     function shareLocation() {
@@ -15,8 +15,8 @@
         navigator.geolocation.getCurrentPosition(position => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
-          const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-          window.location.href = mapLink;
+          const whatsappLink = `https://wa.me/qr/3DSHNTNWQABJC1?text=Check%20my%20location:%20https://www.google.com/maps?q=${latitude},${longitude}`;
+          window.location.href = whatsappLink;
         }, error => {
           alert(`Error: ${error.message}`);
         });
