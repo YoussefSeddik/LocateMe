@@ -1,56 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Share My Location</title>
+  <title>مشاركة موقعي</title>
 </head>
 <body>
-  <h1>مشاركة اللوكيشن الحالي</h1>
-  <button onclick="shareLocation()" style="font-size: larger;">مشاركة اللوكيشن الحالي</button>
+  <h1>مشاركة موقعي</h1>
+  <button onclick="shareLocation()" style="font-size: larger;">مشاركة موقعي</button>
 
   <script>
     function shareLocation() {
-  if ('geolocation' in navigator) {
-    const options = {
-      enableHighAccuracy: true,
-      timeout: 5000, // 5 seconds
-      maximumAge: 0
-    };
-
-    const watchId = navigator.geolocation.watchPosition(
-      position => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        const whatsappLink = `whatsapp://send?text=Check my location: https://www.google.com/maps?q=${latitude},${longitude}`;
-        window.location.href = whatsappLink;
-
-        // If you only need a single location update, you can uncomment the following line
-        // navigator.geolocation.clearWatch(watchId);
-      },
-      error => {
-        handleLocationError(error);
-      },
-      options
-    );
-  } else {
-    alert("Geolocation is not supported by your browser");
-  }
-}
-    function handleLocationError(error) {
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          alert("User denied the request for Geolocation.");
-          break;
-        case error.POSITION_UNAVAILABLE:
-          alert("Location information is unavailable.");
-          break;
-        case error.TIMEOUT:
-          alert("The request to get user location timed out.");
-          break;
-        case error.UNKNOWN_ERROR:
-          alert("An unknown error occurred.");
-          break;
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const message = `مشاركة موقعك الحي: https://www.google.com/maps?q=${latitude},${longitude}&z=17&t=m`;
+          const whatsappLink = `whatsapp://send?text=${encodeURIComponent(message)}`;
+          window.location.href = whatsappLink;
+        }, error => {
+          alert(`خطأ: ${error.message}`);
+        });
+      } else {
+        alert("الموقع غير مدعوم في متصفحك");
       }
     }
   </script>
