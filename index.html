@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مشاركة موقعي</title>
+  <title>مشاركة موقعي الحي</title>
 </head>
 <body>
-  <h1>مشاركة موقعي</h1>
-  <button onclick="shareLocation()" style="font-size: larger;">مشاركة موقعي</button>
+  <h1>مشاركة موقعي الحي</h1>
+  <button onclick="shareLiveLocation()" style="font-size: larger;">مشاركة موقعي الحي</button>
 
   <script>
-    function shareLocation() {
+    function shareLiveLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
           const latitude = position.coords.latitude;
