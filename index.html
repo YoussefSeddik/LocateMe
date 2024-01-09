@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Location Tracking</title>
+  <title>تتبع الموقع الحي</title>
   <style>
     #map {
       height: 400px;
@@ -14,10 +14,12 @@
 <body>
   <h1>تتبع الموقع الحي</h1>
   <div id="map"></div>
+  <button onclick="shareLocationOnWhatsApp()" style="font-size: larger;">مشاركة الموقع على WhatsApp</button>
 
   <script>
     let map;
     let marker;
+    let currentAddress;
 
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
@@ -48,8 +50,8 @@
             map.setCenter({ lat: latitude, lng: longitude });
             marker.setPosition({ lat: latitude, lng: longitude });
 
-            // You can also store the latest coordinates in session storage or perform other actions
-            sessionStorage.setItem('latestCoordinates', JSON.stringify({ latitude, longitude }));
+            // Get the address using Google Maps Geocoding API
+            getAddress(latitude, longitude);
           },
           error => {
             alert(`Error: ${error.message}`);
@@ -58,6 +60,35 @@
         );
       } else {
         alert("Geolocation is not supported by your browser");
+      }
+    }
+
+    function getAddress(latitude, longitude) {
+      const geocoder = new google.maps.Geocoder();
+      const latLng = new google.maps.LatLng(latitude, longitude);
+
+      geocoder.geocode({ 'location': latLng }, (results, status) => {
+        if (status === 'OK') {
+          if (results[0]) {
+            const address = results[0].formatted_address;
+            console.log('Address:', address);
+            currentAddress = address; // Store the current address
+          } else {
+            console.error('No results found');
+          }
+        } else {
+          console.error(`Geocoder failed due to: ${status}`);
+        }
+      });
+    }
+
+    function shareLocationOnWhatsApp() {
+      if (currentAddress) {
+        const whatsappMessage = `موقعي الحالي: ${currentAddress}. انقر على الرابط لعرض الموقع على الخريطة: https://www.google.com/maps?q=${marker.getPosition().lat()},${marker.getPosition().lng()}&z=17&t=m`;
+        const whatsappLink = `whatsapp://send?text=${encodeURIComponent(whatsappMessage)}`;
+        window.location.href = whatsappLink;
+      } else {
+        alert("الرجاء الانتظار حتى يتم العثور على العنوان");
       }
     }
   </script>
