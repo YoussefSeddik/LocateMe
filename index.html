@@ -7,22 +7,48 @@
 </head>
 <body>
   <h1>مشاركة اللوكيشن الحالي</h1>
-  <button onclick="openWhatsAppChooser()" style="font-size: larger;">مشاركة اللوكيشن الحالي</button>
+  <button onclick="shareLocation()" style="font-size: larger;">مشاركة اللوكيشن الحالي</button>
 
   <script>
-    function openWhatsAppChooser() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const message = `Check my location: https://www.google.com/maps?q=${latitude},${longitude}`;
-          const whatsappLink = `whatsapp://send?text=${encodeURIComponent(message)}`;
-          window.location.href = whatsappLink;
-        }, error => {
-          alert(`Error: ${error.message}`);
-        });
+    function shareLocation() {
+      if ('geolocation' in navigator) {
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 5000, // 5 seconds
+          maximumAge: 0
+        };
+
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const whatsappLink = `whatsapp://send?text=Check my location: https://www.google.com/maps?q=${latitude},${longitude}`;
+            window.location.href = whatsappLink;
+          },
+          error => {
+            handleLocationError(error);
+          },
+          options
+        );
       } else {
         alert("Geolocation is not supported by your browser");
+      }
+    }
+
+    function handleLocationError(error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          alert("User denied the request for Geolocation.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          alert("Location information is unavailable.");
+          break;
+        case error.TIMEOUT:
+          alert("The request to get user location timed out.");
+          break;
+        case error.UNKNOWN_ERROR:
+          alert("An unknown error occurred.");
+          break;
       }
     }
   </script>
