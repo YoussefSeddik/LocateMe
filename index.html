@@ -1,99 +1,32 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تتبع الموقع الحي</title>
-  <style>
-    #map {
-      height: 400px;
-      width: 100%;
-    }
-  </style>
+  <title>Share My Location</title>
 </head>
 <body>
-  <h1>تتبع الموقع الحي</h1>
-  <div id="map"></div>
-  <button onclick="shareLocationOnWhatsApp()" style="font-size: larger;">مشاركة الموقع على WhatsApp</button>
+  <h1>مشاركة الموقع الحالي</h1>
+
+<button onclick="shareLocation()" style="font-size: larger;">مشاركة الموقع الحالي/button>
 
   <script>
-    let map;
-    let marker;
-    let currentAddress;
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 0, lng: 0 },
-        zoom: 15
-      });
-
-      marker = new google.maps.Marker({
-        map: map,
-        animation: google.maps.Animation.DROP
-      });
-    }
-
-    function startLiveLocation() {
+    function shareLocation() {
       if (navigator.geolocation) {
-        const options = {
-          enableHighAccuracy: true,
-          timeout: 5000, // 5 seconds
-          maximumAge: 0
-        };
-
-        navigator.geolocation.watchPosition(
-          position => {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            // Update the map and marker position
-            map.setCenter({ lat: latitude, lng: longitude });
-            marker.setPosition({ lat: latitude, lng: longitude });
-
-            // Get the address using Google Maps Geocoding API
-            getAddress(latitude, longitude);
-          },
-          error => {
-            alert(`Error: ${error.message}`);
-          },
-          options
-        );
+        navigator.geolocation.getCurrentPosition(position => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+          window.location.href = mapLink;
+        }, error => {
+          alert(`Error: ${error.message}`);
+        });
       } else {
         alert("Geolocation is not supported by your browser");
       }
     }
-
-    function getAddress(latitude, longitude) {
-      const geocoder = new google.maps.Geocoder();
-      const latLng = new google.maps.LatLng(latitude, longitude);
-
-      geocoder.geocode({ 'location': latLng }, (results, status) => {
-        if (status === 'OK') {
-          if (results[0]) {
-            const address = results[0].formatted_address;
-            console.log('Address:', address);
-            currentAddress = address; // Store the current address
-          } else {
-            console.error('No results found');
-          }
-        } else {
-          console.error(`Geocoder failed due to: ${status}`);
-        }
-      });
-    }
-
-    function shareLocationOnWhatsApp() {
-      if (currentAddress) {
-        const whatsappMessage = `موقعي الحالي: ${currentAddress}. انقر على الرابط لعرض الموقع على الخريطة: https://www.google.com/maps?q=${marker.getPosition().lat()},${marker.getPosition().lng()}&z=17&t=m`;
-        const whatsappLink = `whatsapp://send?text=${encodeURIComponent(whatsappMessage)}`;
-        window.location.href = whatsappLink;
-      } else {
-        alert("الرجاء الانتظار حتى يتم العثور على العنوان");
-      }
-    }
   </script>
-
-  <!-- Include the Google Maps JavaScript API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key= AIzaSyBikCrZmG7cssLnT4Ev1VN5hyT2idJHJZ4&callback=initMap" async defer></script>
 </body>
 </html>
+
+
